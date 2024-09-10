@@ -24,12 +24,22 @@ services:
       - JAEGER_AGENT_HOST=jaeger
       - DASHBOARD_URL=http://localhost:9000/
       - ALLOWED_HOSTS=localhost,api
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
 
   dashboard:
     image: ghcr.io/saleor/saleor-dashboard:latest
     ports:
       - 9002:9002
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
 
   db:
     image: library/postgres:15-alpine
@@ -44,6 +54,11 @@ services:
     environment:
       - POSTGRES_USER=saleor
       - POSTGRES_PASSWORD=saleor
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
 
   redis:
     image: library/redis:7.0-alpine
@@ -54,6 +69,11 @@ services:
       - saleor-backend-tier
     volumes:
       - saleor-redis:/data
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
 
   worker:
     image: ghcr.io/saleor/saleor:3.20
@@ -70,6 +90,11 @@ services:
     volumes:
       # shared volume between worker and api for media
       - saleor-media:/app/media
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
 
   jaeger:
     image: jaegertracing/all-in-one
@@ -87,6 +112,11 @@ services:
     volumes:
       - type: tmpfs
         target: /tmp
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
 
   mailpit:
     image: axllent/mailpit
@@ -96,6 +126,11 @@ services:
     restart: unless-stopped
     networks:
       - saleor-backend-tier
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
 
 volumes:
   saleor-db:
