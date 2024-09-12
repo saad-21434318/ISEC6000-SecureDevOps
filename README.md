@@ -1,173 +1,86 @@
-![Saleor Platform](https://user-images.githubusercontent.com/249912/71523206-4e45f800-28c8-11ea-84ba-345a9bfc998a.png)
+<h1>ISEC6000-SecureDevOps</h1>
 
-<div align="center">
-  <h1>Saleor Platform</h1>
-</div>
+<p>This repository is part of the ISEC6000 course project, focusing on deploying the Saleor e-commerce platform in a secure and scalable DevOps environment. It leverages Kubernetes, Docker, and cloud-native tools, adhering to best practices for container security, and vulnerability scanning.</p>
+<h2>Table of Contents</h2>
+<ul>
+  <li><a href="#project-overview">Project Overview</a></li>
+  <li><a href="#project-structure">Project Structure</a></li>
+  <li><a href="#setup-instructions">Setup Instructions</a></li>
+  <ul>
+    <li><a href="#kubernetes-cluster-setup">Kubernetes Cluster Setup</a></li>
+    <li><a href="#saleor-deployment">Saleor Deployment</a></li>
+  </ul>
+  <li><a href="#security-implementations">Security Implementations</a></li>
+  <li><a href="#vulnerability-scanning">Vulnerability Scanning</a></li>
+</ul>
 
-<div align="center">
-  <p>Run all Saleor services from one repository.</p>
-</div>
+<h2 id="project-overview">Project Overview</h2>
+<p>The ISEC6000-SecureDevOps project focuses on building a secure and scalable architecture for deploying the Saleor e-commerce platform. The project includes multiple services (Saleor API, Dashboard, PostgreSQL, Redis) configured in a Dockerized and Kubernetes-managed environment. It follows DevOps practices to ensure a seamless and secure deployment process.</p>
 
-<div align="center">
-  <a href="https://saleor.io/">🏠 Website</a>
-  <span> • </span>
-  <a href="https://docs.saleor.io/docs/3.x/">📚 Docs</a>
-  <span> • </span>
-  <a href="https://saleor.io/blog/">📰 Blog</a>
-  <span> • </span>
-  <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
-</div>
+<h2 id="project-structure">Project Structure</h2>
+<ul>
+  <li><strong>docker-compose.yml</strong>: Defines the configuration for deploying Saleor platform services using Docker Compose.</li>
+  <li><strong>bin/trivy</strong>: Trivy vulnerability scanner binary for scanning container images.</li>
+  <li>Kubernetes Configurations: Files related to managing Saleor services in a Kubernetes cluster.</li>
+</ul>
 
-<div align="center">
-  <a href="https://githubbox.com/saleor/saleor-platform">🔎 Explore Code</a>
-</div>
+<h2 id="setup-instructions">Setup Instructions</h2>
 
-## About
+<h3 id="kubernetes-cluster-setup">Kubernetes Cluster Setup</h3>
+<p>This project uses <strong>kind</strong> (Kubernetes in Docker) to manage a local Kubernetes cluster.</p>
 
-### What is Saleor Platform?
+<ol>
+  <li><strong>Install <code>kind</code> and <code>kubectl</code>:</strong>
+    <ul>
+      <li><a href="https://kind.sigs.k8s.io/docs/user/quick-start/">Kind Installation Guide</a></li>
+      <li><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">Kubectl Installation Guide</a></li>
+    </ul>
+  </li>
+  <li><strong>Create a Kubernetes Cluster:</strong>
+    <pre><code>kind create cluster --name saleor-cluster</code></pre>
+  </li>
+  <li><strong>Configure kubectl to use the <code>kind</code> cluster:</strong>
+    <pre><code>kubectl cluster-info --context kind-saleor-cluster</code></pre>
+  </li>
+  <li><strong>Deploy Saleor Services:</strong>
+    Follow the <a href="https://github.com/saleor/saleor-platform">Saleor platform deployment guide</a> or use the forked version for deployment.
+  </li>
+</ol>
 
-Saleor Platform is the easiest way to start local development with all the major Saleor services:
-- [Core GraphQL API](https://github.com/saleor/saleor)
-- [Dashboard](https://github.com/saleor/saleor-dashboard)
-- Mailpit (Test email interface)
-- Jaeger (APM)
-- The necessary databases, cache, etc.
+<h3 id="saleor-deployment">Saleor Deployment</h3>
+<ol>
+  <li>Clone the <a href="https://github.com/saleor/saleor-platform">Saleor platform repository</a> or use your forked version.</li>
+  <li>Modify the <code>docker-compose.yml</code>:
+    <ul>
+      <li>Specify port mappings (e.g., Dashboard on port 9002).</li>
+      <li>Define dependencies between services (e.g., PostgreSQL, Redis).</li>
+    </ul>
+  </li>
+  <li>Deploy Saleor:
+    <pre><code>docker-compose up -d</code></pre>
+  </li>
+</ol>
 
-*Keep in mind this repository is for local development only and is not meant to be deployed in any production environment! If you're not a developer and just want to try out Saleor you can check our [live demo](https://demo.saleor.io/).*
+<h2 id="security-implementations">Security Implementations</h2>
 
-## Requirements
-1. [Docker](https://docs.docker.com/install/)
+<h3>Non-Root Containers</h3>
+<p>All containers are configured to run as non-root users. This is specified by assigning user IDs in the <code>docker-compose.yml</code> file.</p>
 
-## How to clone the repository?
+<h3>Secure Base Images</h3>
+<p>The images used (Saleor, Redis, PostgreSQL) are official and verified, ensuring a secure base for deployments.</p>
 
-To clone the repository, run the following command
+<h3>Resource Limits</h3>
+<p>Each service is configured with CPU and memory limits to prevent resource exhaustion and mitigate potential denial-of-service attacks.</p>
 
-```
-git clone https://github.com/saleor/saleor-platform.git
-```
+<h2 id="vulnerability-scanning">Vulnerability Scanning</h2>
+<p>Trivy is employed to scan Docker images for vulnerabilities.</p>
 
-## How to run it?
-
-1. We are using shared folders to enable live code reloading. Without this, Docker Compose will not start:
-    - Windows/MacOS: Add the cloned `saleor-platform` directory to Docker shared directories (Preferences -> Resources -> File sharing).
-    - Windows/MacOS: Make sure that in Docker preferences you have dedicated at least 5 GB of memory (Preferences -> Resources -> Advanced).
-    - Linux: No action is required, sharing is already enabled and memory for the Docker engine is not limited.
-
-2. Go to the cloned directory:
-```shell
-cd saleor-platform
-```
-
-3. Build the application:
-```shell
-docker compose build
-```
-
-4. Apply Django migrations:
-```shell
-docker compose run --rm api python3 manage.py migrate
-```
-
-5. Populate the database with example data and create the admin user:
-```shell
-docker compose run --rm api python3 manage.py populatedb --createsuperuser
-```
-*Note that `--createsuperuser` argument creates an admin account for `admin@example.com` with the password set to `admin`.*
-
-6. Run the application:
-```shell
-docker compose up
-```
-
-## Where is the application running?
-- Saleor Core (API) - http://localhost:8000
-- Saleor Dashboard - http://localhost:9000
-- Jaeger UI (APM) - http://localhost:16686
-- Mailpit (Test email interface) - http://localhost:8025
-
-# Troubleshooting
-
-- [How to solve issues with lack of available space or build errors after an update](#how-to-solve-issues-with-lack-of-available-space-or-build-errors-after-an-update)
-- [How to run application parts?](#how-to-run-application-parts)
-
-## How to solve issues with lack of available space or build errors after an update
-
-Most of the time both issues can be solved by cleaning up space taken by old containers. After that, we build again whole platform. 
-
-
-1. Make sure docker stack is not running
-```shell
-docker compose stop
-```
-
-2. Remove existing volumes
-
-**Warning!** Proceeding will remove also your database container! If you need existing data, please remove only services that cause problems! https://docs.docker.com/compose/reference/rm/
-```shell
-docker compose rm
-```
-
-3. Build fresh containers 
-```shell
-docker compose build
-```
-
-4. Now you can run a fresh environment using commands from `How to run it?` section. Done!
-
-### Still no available space
-
-If you are getting issues with lack of available space, consider pruning your docker cache:
-
-**Warning!** This will remove:
-  - all stopped containers
-  - all networks not used by at least one container
-  - all dangling images
-  - all dangling build cache 
-  
-  More info: https://docs.docker.com/engine/reference/commandline/system_prune/
-  
-<details><summary>I've been warned</summary>
-<p>
-
-```shell
-docker system prune
-```
-
-</p>
-</details>
-
-### Issues with migrations after changing the versions - resetting the database
-
-Please submit an issue ticket if you spot issues with database migrations during the version update. 
-
-When testing developer releases or making local changes, you might end up in a state where you would like to reset the database completely. Since its state is persisted in the mounted volume, you'll need to use a dedicated command.
-
-**Warning!** This command will remove all data already stored in the database.
-
-<details><summary>I've been warned</summary>
-<p>
-
-```shell
-docker compose down --volumes db
-```
-
-</p>
-</details>
-   
-## How to run application parts?
-  - `docker compose up api worker` for backend services only
-  - `docker compose up` for backend and frontend services
-
-## Feedback
-
-If you have any questions or feedback, do not hesitate to contact us via [GitHub Discussions](https://github.com/saleor/saleor/discussions).
-
-## License
-
-Disclaimer: Everything you see here is open and free to use as long as you comply with the [license](https://github.com/saleor/saleor-platform/blob/main/LICENSE). There are no hidden charges. We promise to do our best to fix bugs and improve the code.
-
-Some situations do call for extra code; we can cover exotic use cases or build you a custom e-commerce appliance.
-
-#### Crafted with ❤️ by [Saleor Commerce](https://saleor.io/)
-
-hello@saleor.io
+<ol>
+  <li><strong>Install Trivy:</strong>
+    <pre><code>sudo snap install trivy</code></pre>
+  </li>
+  <li><strong>Run a Vulnerability Scan:</strong>
+    <pre><code>trivy image ghcr.io/saleor/saleor:3.20</code></pre>
+  </li>
+  <li>Document any vulnerabilities found and remedial actions taken to address them.</li>
+</ol>
