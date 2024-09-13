@@ -1,5 +1,8 @@
 <h1>ISEC6000-SecureDevOps</h1>
 
+<h2>Student Name: Saad Ahmed</h2>
+<h2>Student ID: 21434318</h2>
+
 <p>This repository is part of the ISEC6000 course project, focusing on deploying the Saleor e-commerce platform in a secure and scalable DevOps environment. It leverages Kubernetes, Docker, and cloud-native tools, adhering to best practices for container security, and vulnerability scanning.</p>
 <h2>Table of Contents</h2>
 <ul>
